@@ -52,9 +52,10 @@ public class SqlQueryFactory : IDatabaseManager
     /// <summary>
     /// Asynchronously executes a query with optional where statement parameters and command behavior, command type, and returns the result set as a list of dictionaries.
     /// </summary>
-    public Task<List<IDictionary<string, object>>> QueryAsync(string Query, CommandBehavior CommandBehavior, CommandType CommandType, params KeyValuePair<string, object>[] WhereStatementParameters)
+    public Task<List<IDictionary<string, object>>> QueryAsync(string Query, CommandType CommandType,
+        params KeyValuePair<string, object>[] WhereStatementParameters)
     {
-        return Manager.QueryAsync(Query, CommandBehavior, CommandType, WhereStatementParameters);
+        return Manager.QueryAsync(Query, CommandType, WhereStatementParameters);
     }
 
     /// <summary>
