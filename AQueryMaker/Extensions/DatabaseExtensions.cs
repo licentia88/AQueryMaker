@@ -9,26 +9,15 @@ namespace AQueryMaker.Extensions;
 public static class DatabaseExtensions
 {
     // ReSharper disable once UnusedMember.Global
-    public static SqlServerManager SqlManager(this DbContext context)
-    {
-        return new SqlServerManager(context.Database.GetDbConnection());
-    }
+    public static SqlServerManager SqlManager(this DbContext context) => new(context.Database.GetDbConnection());
+
+    // ReSharper disable once UnusedMember.Global
+    public static SqlServerManager SqlManager(this DbConnection connection) => new(connection);
     
     // ReSharper disable once UnusedMember.Global
-    public static SqlServerManager SqlManager(this DbConnection connection)
-    {
-        return new SqlServerManager(connection);
-    }
+    public static OracleServerManager OracleManager(this DbConnection connection) => new(connection);
     
     // ReSharper disable once UnusedMember.Global
-    public static OracleServerManager OracleManager(this DbConnection connection)
-    {
-        return new OracleServerManager(connection);
-    }
-    
-    // ReSharper disable once UnusedMember.Global
-    public static OracleServerManager OracleManager(this DbContext context)
-    {
-        return new OracleServerManager(context.Database.GetDbConnection());
-    }
+    public static OracleServerManager OracleManager(this DbContext context) => new(context.Database.GetDbConnection());
+  
 }
