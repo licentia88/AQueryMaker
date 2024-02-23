@@ -9,7 +9,7 @@ namespace AQueryMaker.Oracle;
 
 public class OracleServerManager : OracleQueryBuilder, IDatabaseManager
 {
-    //
+
     public OracleServerManager(DbConnection dbConnection)
     {
         Connection = dbConnection;
