@@ -18,7 +18,8 @@ public class QueryManager : IDatabaseManager
     /// <summary>
     /// Asynchronously inserts a new record into the specified table using the provided model.
     /// </summary>
-    public Task<Dictionary<string, object>> InsertAsync(string tableName, Dictionary<string, object> model, CommandBehavior commandBehavior = CommandBehavior.Default)
+    public Task<Dictionary<string, object>> InsertAsync(string tableName, Dictionary<string, object> model,
+        CommandBehavior commandBehavior = CommandBehavior.Default)
     {
         return _manager.InsertAsync(tableName, model, commandBehavior);
     }
@@ -26,7 +27,8 @@ public class QueryManager : IDatabaseManager
     /// <summary>
     /// Asynchronously deletes records from the specified table based on the provided model.
     /// </summary>
-    public Task<Dictionary<string, object>> DeleteAsync(string tableName, Dictionary<string, object> model, CommandBehavior commandBehavior = CommandBehavior.Default)
+    public Task<Dictionary<string, object>> DeleteAsync(string tableName, Dictionary<string, object> model,
+        CommandBehavior commandBehavior = CommandBehavior.Default)
     {
         return _manager.DeleteAsync(tableName, model, commandBehavior);
     }
@@ -34,17 +36,18 @@ public class QueryManager : IDatabaseManager
     /// <summary>
     /// Asynchronously updates records in the specified table using the provided model.
     /// </summary>
-    public Task<Dictionary<string, object>> UpdateAsync(string tableName, Dictionary<string, object> model, CommandBehavior commandBehavior = CommandBehavior.Default)
+    public Task<Dictionary<string, object>> UpdateAsync(string tableName, Dictionary<string, object> model,
+        CommandBehavior commandBehavior = CommandBehavior.Default)
     {
         return _manager.UpdateAsync(tableName, model, commandBehavior);
     }
 
-   
 
     /// <summary>
     /// Asynchronously executes a query with optional where statement parameters and returns the result set as a list of dictionaries.
     /// </summary>
-    public Task<List<Dictionary<string, object>>> QueryAsync(string query, params KeyValuePair<string, object>[] whereStatementParameters)
+    public Task<List<Dictionary<string, object>>> QueryAsync(string query,
+        params KeyValuePair<string, object>[] whereStatementParameters)
     {
         return _manager.QueryAsync(query, whereStatementParameters);
     }
@@ -76,12 +79,14 @@ public class QueryManager : IDatabaseManager
         return _manager.GetMethodParameters(methodName);
     }
 
-    public IAsyncEnumerable<List<Dictionary<string, object>>> StreamAsync(string query, params KeyValuePair<string, object>[] whereStatementParameters)
+    public IAsyncEnumerable<List<Dictionary<string, object>>> StreamAsync(string query,
+        params KeyValuePair<string, object>[] whereStatementParameters)
     {
         return _manager.StreamAsync(query, whereStatementParameters);
     }
 
-    public IAsyncEnumerable<List<Dictionary<string, object>>> StreamAsync(string query, int itemPerPage, params KeyValuePair<string, object>[] whereStatementParameters)
+    public IAsyncEnumerable<List<Dictionary<string, object>>> StreamAsync(string query, int itemPerPage,
+        params KeyValuePair<string, object>[] whereStatementParameters)
     {
         return _manager.StreamAsync(query, itemPerPage, whereStatementParameters);
     }
@@ -104,7 +109,6 @@ public class QueryManager : IDatabaseManager
     public Task<List<Dictionary<string, object>>> GetTableListAsync()
     {
         return _manager.GetTableListAsync();
-
     }
 
     public Task<List<Dictionary<string, object>>> GetStoredProcedureParametersAsync(string storedProcedureName)
@@ -112,5 +116,3 @@ public class QueryManager : IDatabaseManager
         return _manager.GetStoredProcedureParametersAsync(storedProcedureName);
     }
 }
-
-

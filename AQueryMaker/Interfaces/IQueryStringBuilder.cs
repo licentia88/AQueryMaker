@@ -59,5 +59,6 @@ public interface IQueryStringBuilder
     string CreateGetTableListStatement();
 
     string CreateGetStoredProcedureParametersStatement();
-    
+
+    string CreateGetStoredProcedureParametersStatement(string procedureName);
 }

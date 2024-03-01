@@ -26,7 +26,7 @@ public class OracleQueryBuilder : DatabaseManager, IQueryStringBuilder
                   JOIN ALL_USERS
                     ON owner = USERNAME
                  WHERE object_type = 'FUNCTION'
-                   AND USERNAME = '{UserId()}'g
+                   AND USERNAME = '{UserId()}'
                    AND STATUS = 'VALID'
                 ".Trim();
     }
@@ -38,19 +38,27 @@ public class OracleQueryBuilder : DatabaseManager, IQueryStringBuilder
 
     public string CreateGetTableListStatement()
     {
-        return $@"SELECT TABLE_NAME FROM SYS.ALL_TABLES\r\nWHERE OWNER = ''{UserId()}'";
+        return $"SELECT TABLE_NAME FROM SYS.ALL_TABLES WHERE OWNER = '{UserId()}' ";
     }
 
     public string CreateGetStoredProcedureParametersStatement()
     {
-        return $@"
-                SELECT ARGUMENT_NAME as PARAMETER_NAME FROM ALL_ARGUMENTS WHERE 
-                    OBJECT_NAME = 'ZA_MAAS_HESAP_OPEN_CLOSE'
-                    AND OWNER = '{UserId()}'
-                    AND ARGUMENT_NAME IS NOT NULL
-                ORDER BY 
-                    SEQUENCE;
-                ";
+        return $@"SELECT ARGUMENT_NAME AS PARAMETER_NAME 
+                  FROM ALL_ARGUMENTS 
+                  WHERE OBJECT_NAME =@OBJECT_NAME 
+                  AND OWNER = '{UserId()}'
+                  AND ARGUMENT_NAME IS NOT NULL 
+                  ORDER BY POSITION".Trim();
+    }
+
+    public string CreateGetStoredProcedureParametersStatement(string procedureName)
+    {
+        return $@"SELECT ARGUMENT_NAME AS PARAMETER_NAME 
+                  FROM ALL_ARGUMENTS 
+                  WHERE OBJECT_NAME = '{procedureName}'
+                  AND OWNER = '{UserId()}'
+                  AND ARGUMENT_NAME IS NOT NULL 
+                  ORDER BY POSITION".Trim();
     }
 
     public string CreateInsertStatement(string tableName, Dictionary<string, object> model, string primaryKey, bool isAutoIncrement)
@@ -77,6 +85,8 @@ public class OracleQueryBuilder : DatabaseManager, IQueryStringBuilder
     {
         throw new NotImplementedException();
     }
+
+   
 }
 
 

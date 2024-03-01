@@ -35,9 +35,25 @@ public class OracleServerManager : OracleQueryBuilder, IDatabaseManager
         throw new NotImplementedException();
     }
 
-    public Task<List<Dictionary<string, object>>> GetStoredProcedureParametersAsync(string storedProcedureName)
+    public async Task<List<Dictionary<string, object>>> GetStoredProcedureParametersAsync(string storedProcedureName)
     {
-        throw new NotImplementedException();
+        var command = Connection.CreateCommand();
+
+        await command.OpenAsync();
+
+        var metadataQuery = CreateGetStoredProcedureParametersStatement(storedProcedureName);
+
+        command.CommandText = metadataQuery;
+
+        command.CommandType = CommandType.Text;
+
+        DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
+
+        var result = await ExecuteCommandAsync(reader);
+
+        if (command.Connection != null) await command.Connection.CloseAsync();
+
+        return result;
     }
 
     public async Task<List<Dictionary<string, object>>> GetStoredProcedures()
@@ -66,9 +82,25 @@ public class OracleServerManager : OracleQueryBuilder, IDatabaseManager
         throw new NotImplementedException();
     }
 
-    public Task<List<Dictionary<string, object>>> GetTableListAsync()
+    public async Task<List<Dictionary<string, object>>> GetTableListAsync()
     {
-        throw new NotImplementedException();
+        var command = Connection.CreateCommand();
+
+        await command.OpenAsync();
+
+        var metadataQuery = CreateGetTableListStatement();
+
+        command.CommandText = metadataQuery;
+
+        command.CommandType = CommandType.Text;
+
+        DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
+
+        var result = await ExecuteCommandAsync(reader);
+
+        if (command.Connection != null) await command.Connection.CloseAsync();
+
+        return result;
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]

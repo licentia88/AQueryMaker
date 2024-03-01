@@ -143,7 +143,8 @@ public abstract class DatabaseManager
             {
                 var columnName = column.ColumnName;
                 var columnValue = dataReader[columnName];
-                newObj.Add(columnName, columnValue is DBNull? null:columnValue );
+                newObj[columnName] = columnValue is DBNull ? null : columnValue;
+                //newObj.Add(columnName,  );
             }
 
             resultSet.Add(newObj);
@@ -168,7 +169,7 @@ public abstract class DatabaseManager
             {
                 var columnName = column.ColumnName;
                 var columnValue = dataReader[columnName];
-                newObj.Add(columnName, columnValue is DBNull ? null : columnValue);
+                newObj[columnName] = columnValue is DBNull ? null : columnValue;
             }
 
             resultSet.Add(newObj);

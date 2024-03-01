@@ -127,4 +127,11 @@ public class SqlQueryBuilder : DatabaseManager, IQueryStringBuilder
                       WHERE SPECIFIC_NAME = @SPECIFIC_NAME
                         ORDER BY ORDINAL_POSITION";
     }
+
+    public string CreateGetStoredProcedureParametersStatement(string procedureName)
+    {
+        return @$"SELECT SUBSTRING(PARAMETER_NAME,2,LEN(PARAMETER_NAME)) PARAMETER_NAME FROM INFORMATION_SCHEMA.PARAMETERS
+                      WHERE SPECIFIC_NAME = '{procedureName}'
+                        ORDER BY ORDINAL_POSITION";
+    }
 }
