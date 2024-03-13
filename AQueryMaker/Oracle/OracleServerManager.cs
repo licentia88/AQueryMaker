@@ -144,13 +144,42 @@ public class OracleServerManager : OracleQueryBuilder, IDatabaseManager
 
     public IAsyncEnumerable<List<Dictionary<string, object>>> StreamAsync(string query, params KeyValuePair<string, object>[] whereStatementParameters)
     {
-        throw new NotImplementedException();
+        return StreamAsync(query, 100, whereStatementParameters);
     }
 
-    public IAsyncEnumerable<List<Dictionary<string, object>>> StreamAsync(string query, int itemPerPage, params KeyValuePair<string, object>[] whereStatementParameters)
+    public async IAsyncEnumerable<List<Dictionary<string, object>>> StreamAsync(string query, int itemPerPage, params KeyValuePair<string, object>[] whereStatementParameters)
     {
-        throw new NotImplementedException();
+        var pageIndex = 0;
+
+        var command = Connection.CreateCommand();
+
+        bool hasMoreRows;
+
+        do
+        {
+            await command.OpenAsync();
+
+            command.CommandText = $" {query}  OFFSET {pageIndex * itemPerPage} ROWS  FETCH NEXT {itemPerPage} ROWS ONLY ";
+
+            command.CommandType = CommandType.Text;
+
+            AddWhereStatementParameters(command, whereStatementParameters);
+
+            DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.SequentialAccess);
+
+            var result = await ExecuteCommandAsync(reader);
+
+            pageIndex++;
+
+            hasMoreRows = reader.HasRows;
+
+            await Connection.CloseAsync();
+
+            yield return result;
+        }
+        while (hasMoreRows);
     }
+
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     public Task<Dictionary<string, object>> UpdateAsync(string tableName, Dictionary<string, object> model, CommandBehavior commandBehavior = CommandBehavior.Default)

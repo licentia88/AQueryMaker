@@ -1,33 +1,34 @@
-﻿using System.Data;
+using System.Data;
 using System.Data.Common;
 using AQueryMaker.Extensions;
 using AQueryMaker.Interfaces;
-using Microsoft.Data.SqlClient;
+using AQueryMaker.MSSql;
+using Microsoft.Data.Sqlite;
 
-namespace AQueryMaker.MSSql;
+namespace AQueryMaker.SQLite;
 
 /// <summary>
 /// Represents a SQL Server database manager that extends the <see cref="SqLiteQueryBuilder"/> class and implements the <see cref="IDatabaseManager"/> interface.
 /// </summary>
-public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
+public class SqLiteServerManager : SqLiteQueryBuilder, IDatabaseManager
 {
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SqlServerManager"/> class with the specified database connection.
     /// </summary>
     /// <param name="dbConnection">The database connection.</param>
-    public SqlServerManager(DbConnection dbConnection)
+    public SqLiteServerManager(DbConnection dbConnection)
     {
         Connection = dbConnection;
     }
 
     //public new dbc Connection { get; set; }
     /// <inheritdoc/>
-    public async Task<Dictionary<string, object>> InsertAsync(string tableName, Dictionary<string, object> model, CommandBehavior commandBehavior = CommandBehavior.Default)
+    public async Task<Dictionary<string, object>> InsertAsync(string TableName, Dictionary<string, object> Model, CommandBehavior CommandBehavior = CommandBehavior.Default)
     {
-        var isAutoInrementQuery = IsAutoIncrementStatement(tableName);
+        var isAutoInrementQuery = IsAutoIncrementStatement(TableName);
 
-        var whereStatement = new KeyValuePair<string, object>(nameof(tableName), tableName);
+        var whereStatement = new KeyValuePair<string, object>(nameof(TableName), TableName);
 
         var isAutoIncrementResult = await QueryAsync(isAutoInrementQuery, CommandType.Text, whereStatement);
 
@@ -37,21 +38,21 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
 
         if (isIdentity)
             if (primaryKeyName != null)
-                model.Remove(primaryKeyName);
+                Model.Remove(primaryKeyName);
 
-        var insertStatement = CreateInsertStatement(tableName, model, primaryKeyName, isIdentity);
+        var insertStatement = CreateInsertStatement(TableName, Model, primaryKeyName, isIdentity);
 
-        var insertResult = await QueryAsync(insertStatement, model.GetAsWhereStatement());
+        var insertResult = await QueryAsync(insertStatement, Model.GetAsWhereStatement());
 
         return insertResult.FirstOrDefault();
     }
 
     /// <inheritdoc/>
-    public async Task<Dictionary<string, object>> UpdateAsync(string tableName, Dictionary<string, object> model, CommandBehavior commandBehavior = CommandBehavior.Default)
+    public async Task<Dictionary<string, object>> UpdateAsync(string TableName, Dictionary<string, object> Model, CommandBehavior CommandBehavior = CommandBehavior.Default)
     {
-        var isAutoInrementQuery = IsAutoIncrementStatement(tableName);
+        var isAutoInrementQuery = IsAutoIncrementStatement(TableName);
 
-        var whereStatement = new KeyValuePair<string, object>(nameof(tableName), tableName);
+        var whereStatement = new KeyValuePair<string, object>(nameof(TableName), TableName);
 
         var isAutoIncrementResult = await QueryAsync(isAutoInrementQuery, CommandType.Text, whereStatement);
 
@@ -59,9 +60,9 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
 
         //bool IsIdentity = (bool)(isAutoIncrementResult.First()["IS_IDENTITY"].CastTo<bool>());
 
-        var updateStatement = CreateUpdateStatement(tableName, model, primaryKeyName);
+        var updateStatement = CreateUpdateStatement(TableName, Model, primaryKeyName);
 
-        var updateResult = await QueryAsync(updateStatement, model.GetAsWhereStatement());
+        var updateResult = await QueryAsync(updateStatement, Model.GetAsWhereStatement());
 
         return updateResult.FirstOrDefault();
 
@@ -69,11 +70,11 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
     }
 
     /// <inheritdoc/>
-    public async Task<Dictionary<string, object>> DeleteAsync(string tableName, Dictionary<string, object> model, CommandBehavior commandBehavior = CommandBehavior.Default)
+    public async Task<Dictionary<string, object>> DeleteAsync(string TableName, Dictionary<string, object> Model, CommandBehavior CommandBehavior = CommandBehavior.Default)
     {
-        var isAutoInrementQuery = IsAutoIncrementStatement(tableName);
+        var isAutoInrementQuery = IsAutoIncrementStatement(TableName);
 
-        var whereStatement = new KeyValuePair<string, object>(nameof(tableName), tableName);
+        var whereStatement = new KeyValuePair<string, object>(nameof(TableName), TableName);
 
         var isAutoIncrementResult = await QueryAsync(isAutoInrementQuery, CommandType.Text, whereStatement);
 
@@ -81,35 +82,35 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
 
         //bool IsIdentity = (bool)(isAutoIncrementResult.First()["IS_IDENTITY"].CastTo<bool>());
 
-        var deleteStatement = CreateDeleteStatement(tableName, primaryKeyName);
+        var deleteStatement = CreateDeleteStatement(TableName, primaryKeyName);
 
-        await QueryAsync(deleteStatement, model.GetAsWhereStatement());
+        await QueryAsync(deleteStatement, Model.GetAsWhereStatement());
 
-        return model;
+        return Model;
     }
 
     /// <inheritdoc/>
-    public Task<List<Dictionary<string, object>>> QueryAsync(string query, params KeyValuePair<string, object>[] whereStatementParameters)
+    public Task<List<Dictionary<string, object>>> QueryAsync(string Query, params KeyValuePair<string, object>[] WhereStatementParameters)
     {
-        return QueryAsync(query, CommandType.Text, whereStatementParameters);
+        return QueryAsync(Query, CommandType.Text, WhereStatementParameters);
 
     }
 
     /// <inheritdoc/>
-    public async Task<List<Dictionary<string, object>>> QueryAsync(string query, CommandType commandType,
-        params KeyValuePair<string, object>[] whereStatementParameters)
+    public async Task<List<Dictionary<string, object>>> QueryAsync(string Query, CommandType CommandType,
+        params KeyValuePair<string, object>[] WhereStatementParameters)
     {
-        if (Connection is not SqlConnection sqlConnection) throw new InvalidCastException();
+        if (Connection is not SqliteConnection sqlConnection) throw new InvalidCastException();
         
         var command = sqlConnection.CreateCommand();
 
         await command.OpenAsync();
 
-        command.CommandText = query;
+        command.CommandText = Query;
 
-        command.CommandType = commandType;
+        command.CommandType = CommandType;
 
-        AddWhereStatementParameters(command, whereStatementParameters);
+        AddWhereStatementParameters(command, WhereStatementParameters);
 
         DbDataReader reader = await command.ExecuteReaderAsync();
 
@@ -138,7 +139,7 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
         {
             await command.OpenAsync();
 
-            command.CommandText = $" {query}  OFFSET {pageIndex * itemPerPage} ROWS  FETCH NEXT {itemPerPage} ROWS ONLY "; 
+            command.CommandText = $" {query}  OFFSET {pageIndex * itemPerPage} ROWS  FETCH NEXT {itemPerPage} ROWS ONLY ";
 
             command.CommandType = CommandType.Text;
 
@@ -160,13 +161,13 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
     }
 
     /// <inheritdoc/>
-    public async Task<List<Dictionary<string, object>>> GetStoredProcedureFieldsAsync(string procedureName)
+    public async Task<List<Dictionary<string, object>>> GetStoredProcedureFieldsAsync(string ProcedureName)
     {
         var command = Connection.CreateCommand();
 
         await command.OpenAsync();
 
-        var metadataQuery = CreateStoredProcedureFieldMetaDataStatement(procedureName);
+        var metadataQuery = CreateStoredProcedureFieldMetaDataStatement(ProcedureName);
 
         command.CommandText = metadataQuery;
 
@@ -183,21 +184,21 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
     }
 
     /// <inheritdoc/>
-    public async Task<List<Dictionary<string, object>>> GetMethodParameters(string methodName)
+    public async Task<List<Dictionary<string, object>>> GetMethodParameters(string MethodName)
     {
         var command = Connection.CreateCommand();
 
         await command.OpenAsync();
 
-        var metadataQuery = CreateMethodPropertyMetaDataStatement(methodName);
+        var metadataQuery = CreateMethodPropertyMetaDataStatement(MethodName);
 
         command.CommandText = metadataQuery;
 
         command.CommandType = CommandType.Text;
 
-        AddWhereStatementParameters(command, (nameof(methodName), methodName));
+        AddWhereStatementParameters(command, (nameof(MethodName), MethodName));
 
-        DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
+        DbDataReader reader = command.ExecuteReader(CommandBehavior.Default);
 
         var result = await ExecuteCommandAsync(reader);
 
@@ -218,7 +219,7 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
 
         command.CommandType = CommandType.Text;
 
-        DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
+        DbDataReader reader = command.ExecuteReader(CommandBehavior.Default);
 
         var result = await ExecuteCommandAsync(reader);
 
@@ -227,7 +228,7 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
         return result;
     }
 
-    public async Task<List<Dictionary<string, object>>> GetTableFieldsAsync(string tableName)
+    public async Task<List<Dictionary<string, object>>> GetTableFieldsAsync(string TableName)
     {
         var command = Connection.CreateCommand();
 
@@ -239,9 +240,9 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
 
         command.CommandType = CommandType.Text;
 
-        AddWhereStatementParameters(command, ("TABLE_NAME", tableName));
+        AddWhereStatementParameters(command, ("TABLE_NAME", TableName));
 
-        DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
+        DbDataReader reader = command.ExecuteReader(CommandBehavior.Default);
 
         var result = await ExecuteCommandAsync(reader);
 
@@ -262,7 +263,7 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
 
         command.CommandType = CommandType.Text;
 
-        DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
+        DbDataReader reader = command.ExecuteReader(CommandBehavior.Default);
 
         var result = await ExecuteCommandAsync(reader);
 
@@ -271,7 +272,7 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
         return result;
     }
 
-    public async Task<List<Dictionary<string, object>>> GetStoredProcedureParametersAsync(string storedProcedureName)
+    public async Task<List<Dictionary<string, object>>> GetStoredProcedureParametersAsync(string StoredProcedureName)
     {
         var command = Connection.CreateCommand();
 
@@ -283,16 +284,15 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
 
         command.CommandType = CommandType.Text;
 
-        AddWhereStatementParameters(command, ("SPECIFIC_NAME", storedProcedureName));
+        AddWhereStatementParameters(command, ("SPECIFIC_NAME", StoredProcedureName));
 
-        DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
+        DbDataReader reader = command.ExecuteReader(CommandBehavior.Default);
 
         var result = await ExecuteCommandAsync(reader);
 
         if (command.Connection != null) await command.Connection.CloseAsync();
 
         return result;
-        
     }
 }
 
