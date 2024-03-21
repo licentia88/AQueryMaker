@@ -27,5 +27,15 @@ public static class DatabaseExtensions
     
     // ReSharper disable once UnusedMember.Global
     public static OracleServerManager OracleManager(this DbContext context) => new(context.Database.GetDbConnection());
-  
+
+    public static QueryManager Manager(this DbContext context)
+    {
+        return context.Database.ProviderName switch
+        {
+            "Microsoft.EntityFrameworkCore.SqlServer" => new QueryManager(SqlManager(context.Database.GetDbConnection())),
+            "Microsoft.EntityFrameworkCore.Sqlite" => new QueryManager(SqLiteManager(context.Database.GetDbConnection())),
+            "Oracle.EntityFrameworkCore" => new QueryManager(OracleManager(context.Database.GetDbConnection())),
+            _ => default
+        };
+    }
 }
