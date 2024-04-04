@@ -58,7 +58,7 @@ public abstract class DatabaseManager
     /// <summary>
     /// Adds parameters to the database command based on the provided where statement parameters.
     /// </summary>
-    internal void AddWhereStatementParameters(DbCommand command, params (string Key, object Value)[] whereStatementParameters)
+    public virtual  void AddWhereStatementParameters(DbCommand command, params (string Key, object Value)[] whereStatementParameters)
     {
         try
         {
@@ -92,7 +92,7 @@ public abstract class DatabaseManager
     /// <summary>
     /// Adds parameters to the database command based on the provided where statement parameters.
     /// </summary>
-    internal void AddWhereStatementParameters(DbCommand command, params KeyValuePair<string, object>[] whereStatementParameters)
+    virtual internal void AddWhereStatementParameters(DbCommand command, params KeyValuePair<string, object>[] whereStatementParameters)
     {
         try
         {

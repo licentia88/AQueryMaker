@@ -186,6 +186,90 @@ public class OracleServerManager : OracleQueryBuilder, IDatabaseManager
     {
         throw new NotImplementedException();
     }
+
+    internal override void AddWhereStatementParameters(DbCommand command, params KeyValuePair<string, object>[] whereStatementParameters)
+    {
+        try
+        {
+            if (whereStatementParameters is null) return;
+
+
+            var parameters = GetOracleParameters(whereStatementParameters);
+
+            if (parameters.Length > 0)
+                command.Parameters.AddRange(parameters);
+
+            //var parameterIndex = 0;
+
+            //foreach (var statement in whereStatementParameters)
+            //{
+            //    var parameter = ((OracleCommand)command).CreateParameter();
+            //    parameter.ParameterName = $":{statement.Key}";
+            //    parameter.Value = statement.Value ?? DBNull.Value;
+
+            //    parameters[parameterIndex] = parameter;
+
+            //    parameterIndex++;
+            //}
+
+            //if (parameters.Length > 0)
+            //    command.Parameters.AddRange(parameters);
+        }
+        catch
+        {
+            // Handle exception or log the error
+        }
+    }
+
+
+    public static OracleParameter[] GetOracleParameters(KeyValuePair<string, object>[] parameters)
+    {
+        List<OracleParameter> oracleParameters = new List<OracleParameter>();
+
+        foreach (KeyValuePair<string, object> parameter in parameters)
+        {
+            OracleParameter oracleParameter = new OracleParameter();
+            oracleParameter.ParameterName = parameter.Key;
+
+            if (parameter.Value == null)
+            {
+                oracleParameter.Value = DBNull.Value;
+            }
+            else
+            {
+                Type valueType = parameter.Value.GetType();
+
+                if (valueType == typeof(DateTime))
+                {
+                    oracleParameter.OracleDbType = OracleDbType.Date;
+                    oracleParameter.Value = ((DateTime)parameter.Value).ToString("dd/MM/yyyy");
+                }
+                else if (valueType == typeof(int))
+                {
+                    oracleParameter.OracleDbType = OracleDbType.Int32;
+                    oracleParameter.Value = (int)parameter.Value;
+                }
+                else if (valueType == typeof(string))
+                {
+                    oracleParameter.OracleDbType = OracleDbType.Varchar2;
+                    oracleParameter.Value = (string)parameter.Value;
+                }
+                else if (valueType == typeof(bool))
+                {
+                    oracleParameter.OracleDbType = OracleDbType.Byte;
+                    oracleParameter.Value = (bool)parameter.Value;
+                }
+                else
+                {
+                    throw new ArgumentException($"Unsupported parameter type: {valueType}");
+                }
+            }
+
+            oracleParameters.Add(oracleParameter);
+        }
+
+        return oracleParameters.ToArray();
+    }
 }
 
 
