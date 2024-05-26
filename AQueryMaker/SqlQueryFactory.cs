@@ -10,6 +10,8 @@ public class SqlQueryFactory : IDatabaseManager
 
     public DbConnection Connection => Manager.Connection;
 
+    public int TimeOut { get; set; }
+
     public SqlQueryFactory(IDatabaseManager manager)
     {
         Manager = manager;

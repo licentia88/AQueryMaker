@@ -2,16 +2,16 @@
 using System.Data.Common;
 using AQueryMaker.Extensions;
 using AQueryMaker.Interfaces;
+using AQueryMaker.MSSql;
 using Mapster;
-using Microsoft.Data.SqlClient;
-using Oracle.ManagedDataAccess.Client;
+using MySqlConnector;
 
-namespace AQueryMaker.MSSql;
+namespace AQueryMaker.MySql;
 
 /// <summary>
 /// Represents a SQL Server database manager that extends the <see cref="SqLiteQueryBuilder"/> class and implements the <see cref="IDatabaseManager"/> interface.
 /// </summary>
-public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
+public class MySqlServerManager : MySqlQueryBuilder, IDatabaseManager
 {
     public int TimeOut { get; set; }
 
@@ -19,7 +19,7 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
     /// Initializes a new instance of the <see cref="SqlServerManager"/> class with the specified database connection.
     /// </summary>
     /// <param name="dbConnection">The database connection.</param>
-    public SqlServerManager(DbConnection dbConnection)
+    public MySqlServerManager(DbConnection dbConnection)
     {
         Connection = dbConnection;
     }
@@ -100,9 +100,9 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
     public async Task<List<Dictionary<string, object>>> QueryAsync(string query, CommandType commandType,
         params KeyValuePair<string, object>[] whereStatementParameters)
     {
-        if (Connection is not SqlConnection sqlConnection) throw new InvalidCastException();
+        if (Connection is not MySqlConnection mySqlConnection) throw new InvalidCastException();
         
-        var command = sqlConnection.CreateCommand();
+        var command = mySqlConnection.CreateCommand();
 
         command.CommandTimeout = TimeOut;
 
@@ -312,9 +312,9 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
 
     public async Task<DbDataReader> QueryReaderAsync(string query, CommandType commandType, params KeyValuePair<string, object>[] whereStatementParameters)
     {
-        if (Connection is not SqlConnection sqlConnection) throw new InvalidCastException();
+        if (Connection is not MySqlConnection MySqlConnection) throw new InvalidCastException();
 
-        var command = sqlConnection.CreateCommand();
+        var command = MySqlConnection.CreateCommand();
 
         command.CommandTimeout = TimeOut;
 
@@ -352,7 +352,7 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
 
             await command.OpenAsync();
 
-            command.CommandText = $" {query}  OFFSET {pageIndex * itemPerPage} ROWS  FETCH NEXT {itemPerPage} ROWS ONLY ";
+            command.CommandText = $"{query} LIMIT {itemPerPage} OFFSET {pageIndex * itemPerPage}";
 
             command.CommandType = CommandType.Text;
 
@@ -384,10 +384,11 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
     public async Task<List<TModel>> QueryAsync<TModel>(string query, CommandType commandType,
         params KeyValuePair<string, object>[] whereStatementParameters)
     {
-        if (Connection is not OracleConnection sqlConnection) throw new InvalidCastException();
+        if (Connection is not MySqlConnection MySqlConnection) throw new InvalidCastException();
 
-        var command = sqlConnection.CreateCommand();
-        command.CommandTimeout = TimeOut;
+        var command = MySqlConnection.CreateCommand();
+
+         command.CommandTimeout = TimeOut;
 
         await command.OpenAsync();
 

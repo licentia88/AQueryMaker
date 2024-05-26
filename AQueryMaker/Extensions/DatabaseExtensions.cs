@@ -1,7 +1,7 @@
 using System.Data.Common;
 using AQueryMaker.MSSql;
+using AQueryMaker.MySql;
 using AQueryMaker.Oracle;
-using AQueryMaker.SQLite;
 using Microsoft.EntityFrameworkCore;
 
 namespace AQueryMaker.Extensions;
@@ -16,11 +16,10 @@ public static class DatabaseExtensions
     public static SqlServerManager SqlManager(this DbConnection connection) => new(connection);
 
     // ReSharper disable once UnusedMember.Global
-    public static SqLiteServerManager SqLiteManager(this DbContext context) => new(context.Database.GetDbConnection());
+    public static MySqlServerManager MySqlManager(this DbContext context) => new(context.Database.GetDbConnection());
 
     // ReSharper disable once UnusedMember.Global
-    public static SqLiteServerManager SqLiteManager(this DbConnection connection) => new(connection);
-
+    public static MySqlServerManager MySqlManager(this DbConnection connection) => new(connection);
 
     // ReSharper disable once UnusedMember.Global
     public static OracleServerManager OracleManager(this DbConnection connection) => new(connection);
@@ -33,8 +32,8 @@ public static class DatabaseExtensions
         return context.Database.ProviderName switch
         {
             "Microsoft.EntityFrameworkCore.SqlServer" => new QueryManager(SqlManager(context.Database.GetDbConnection())),
-            "Microsoft.EntityFrameworkCore.Sqlite" => new QueryManager(SqLiteManager(context.Database.GetDbConnection())),
             "Oracle.EntityFrameworkCore" => new QueryManager(OracleManager(context.Database.GetDbConnection())),
+            "Pomelo.EntityFrameworkCore.MySql" => new QueryManager(MySqlManager(context.Database.GetDbConnection())),
             _ => default
         };
     }

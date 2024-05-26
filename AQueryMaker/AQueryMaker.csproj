@@ -30,14 +30,18 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         <PrivateAssets>all</PrivateAssets>
       </PackageReference>
-      <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="6.0.4" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.4" />
+      <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.0" />
     </ItemGroup>
 
     <ItemGroup>
       <None Remove="SQLite\" />
+      <None Remove="MySql\" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="SQLite\" />
+      <Compile Remove="SqlQueryFactory.cs" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="MySql\" />
     </ItemGroup>
 </Project>

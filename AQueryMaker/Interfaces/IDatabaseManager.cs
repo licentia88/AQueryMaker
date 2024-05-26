@@ -13,6 +13,8 @@ public interface IDatabaseManager
     /// </summary>
     DbConnection Connection { get; }
 
+    public int TimeOut { get; set; }
+
     /// <summary>
     /// Inserts a new record into the specified table asynchronously.
     /// </summary>
@@ -77,6 +79,32 @@ public interface IDatabaseManager
         params KeyValuePair<string, object>[] whereStatementParameters);
 
     /// <summary>
+    /// Executes a database query asynchronously with the specified WHERE statement parameters as key-value pairs.
+    /// </summary>
+    /// <param name="query">The SQL query.</param>
+    /// <param name="whereStatementParameters">The WHERE statement parameters as key-value pairs.</param>
+    /// <returns>A task representing the asynchronous operation. A list of records as dictionaries.</returns>
+    Task<List<TModel>> QueryAsync<TModel>(string query, params KeyValuePair<string, object>[] whereStatementParameters);
+
+    /// <summary>
+    /// Executes a database query asynchronously with the specified command behavior, command type, and WHERE statement parameters as key-value pairs.
+    /// </summary>
+    /// <param name="query">The SQL query.</param>
+    /// <param name="commandType">The command type.</param>
+    /// <param name="whereStatementParameters">The WHERE statement parameters as key-value pairs.</param>
+    /// <returns>A task representing the asynchronous operation. A list of records as dictionaries.</returns>
+    Task<List<TModel>> QueryAsync<TModel>(string query, CommandType commandType,params KeyValuePair<string, object>[] whereStatementParameters);
+
+    Task<DbDataReader> QueryReaderAsync(string query, params KeyValuePair<string, object>[] whereStatementParameters);
+
+    Task<DbDataReader> QueryReaderAsync(string query, CommandType commandType,
+        params KeyValuePair<string, object>[] whereStatementParameters);
+
+    IAsyncEnumerable<DbDataReader> StreamReaderAsync(string query, params KeyValuePair<string, object>[] whereStatementParameters);
+
+    IAsyncEnumerable<DbDataReader> StreamReaderAsync(string query, int itemPerPage, params KeyValuePair<string, object>[] whereStatementParameters);
+
+    /// <summary>
     /// Executes a database query with streaming asynchronously with the specified WHERE statement parameters as key-value pairs.
     /// </summary>
     /// <param name="query">The SQL query.</param>
@@ -91,7 +119,24 @@ public interface IDatabaseManager
     /// <param name="itemPerPage"></param>
     /// <param name="whereStatementParameters">The WHERE statement parameters as key-value pairs.</param>
     /// <returns>A task representing the asynchronous operation. A list of records as dictionaries.</returns>
-    IAsyncEnumerable<List<Dictionary<string, object>>> StreamAsync(string query,int itemPerPage, params KeyValuePair<string, object>[] whereStatementParameters);
+    IAsyncEnumerable<List<Dictionary<string, object>>> StreamAsync(string query, int itemPerPage, params KeyValuePair<string, object>[] whereStatementParameters);
+
+    /// <summary>
+    /// Executes a database query with streaming asynchronously with the specified WHERE statement parameters as key-value pairs.
+    /// </summary>
+    /// <param name="query">The SQL query.</param>
+    /// <param name="whereStatementParameters">The WHERE statement parameters as key-value pairs.</param>
+    /// <returns>A task representing the asynchronous operation. A list of records as dictionaries.</returns>
+    IAsyncEnumerable<List<TModel>> StreamAsync<TModel>(string query, params KeyValuePair<string, object>[] whereStatementParameters);
+
+    /// <summary>
+    /// Executes a database query with streaming asynchronously with the specified command behavior, command type, and WHERE statement parameters as key-value pairs.
+    /// </summary>
+    /// <param name="query">The SQL query.</param>
+    /// <param name="itemPerPage"></param>
+    /// <param name="whereStatementParameters">The WHERE statement parameters as key-value pairs.</param>
+    /// <returns>A task representing the asynchronous operation. A list of records as dictionaries.</returns>
+    IAsyncEnumerable<List<TModel>> StreamAsync<TModel>(string query, int itemPerPage, params KeyValuePair<string, object>[] whereStatementParameters);
 
     /// <summary>
     /// Retrieves the field metadata of a stored procedure asynchronously.

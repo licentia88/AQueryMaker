@@ -10,11 +10,21 @@ public class QueryManager : IDatabaseManager
 
     public DbConnection Connection => _manager.Connection;
 
+     public int TimeOut
+    {
+        get => _manager.TimeOut;
+        set => _manager.TimeOut = value;
+    }
+
     public QueryManager(IDatabaseManager manager)
     {
         _manager = manager;
     }
 
+    public void SetConnectionTimeOut(int Seconds)
+    {
+        TimeOut = Seconds;
+    }
     /// <summary>
     /// Asynchronously inserts a new record into the specified table using the provided model.
     /// </summary>
@@ -59,6 +69,16 @@ public class QueryManager : IDatabaseManager
         params KeyValuePair<string, object>[] whereStatementParameters)
     {
         return _manager.QueryAsync(query, commandType, whereStatementParameters);
+    }
+
+    public Task<DbDataReader> QueryReaderAsync(string query, params KeyValuePair<string, object>[] whereStatementParameters)
+    {
+        return _manager.QueryReaderAsync(query, whereStatementParameters);
+    }
+
+    public Task<DbDataReader> QueryReaderAsync(string query, CommandType commandType, params KeyValuePair<string, object>[] whereStatementParameters)
+    {
+        return _manager.QueryReaderAsync(query, commandType, whereStatementParameters);
     }
 
     /// <summary>
@@ -114,5 +134,37 @@ public class QueryManager : IDatabaseManager
     public Task<List<Dictionary<string, object>>> GetStoredProcedureParametersAsync(string storedProcedureName)
     {
         return _manager.GetStoredProcedureParametersAsync(storedProcedureName);
+    }
+
+    public Task<List<TModel>> QueryAsync<TModel>(string query, params KeyValuePair<string, object>[] whereStatementParameters)
+    {
+        return _manager.QueryAsync<TModel>(query,whereStatementParameters);
+
+    }
+
+    public Task<List<TModel>> QueryAsync<TModel>(string query, CommandType commandType, params KeyValuePair<string, object>[] whereStatementParameters)
+    {
+        return _manager.QueryAsync<TModel>(query,commandType, whereStatementParameters);
+    }
+
+    public IAsyncEnumerable<DbDataReader> StreamReaderAsync(string query, params KeyValuePair<string, object>[] whereStatementParameters)
+    {
+        return _manager.StreamReaderAsync(query, whereStatementParameters);
+
+    }
+
+    public IAsyncEnumerable<DbDataReader> StreamReaderAsync(string query, int itemPerPage, params KeyValuePair<string, object>[] whereStatementParameters)
+    {
+        return _manager.StreamReaderAsync(query, itemPerPage, whereStatementParameters);
+    }
+
+    public IAsyncEnumerable<List<TModel>> StreamAsync<TModel>(string query, params KeyValuePair<string, object>[] whereStatementParameters)
+    {
+        return _manager.StreamAsync<TModel>(query, whereStatementParameters);
+    }
+
+    public IAsyncEnumerable<List<TModel>> StreamAsync<TModel>(string query, int itemPerPage, params KeyValuePair<string, object>[] whereStatementParameters)
+    {
+        return _manager.StreamAsync<TModel>(query,itemPerPage, whereStatementParameters);
     }
 }
