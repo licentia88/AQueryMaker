@@ -122,6 +122,40 @@ var result = await queryManager.DeleteAsync("TableName", model);
 var result = await queryManager.QueryAsync("SELECT * FROM TableName WHERE ColumnName = @Value", new KeyValuePair<string, object>("Value", value));
 ```
 
+## Data Mapping
+
+### Querying with Adapt<List<T>>()
+If you prefer to work with strongly-typed models, you can use the Adapt<List<T>>() method to adapt the result to a list of objects of type T.
+
+```csharp
+var result = await queryManager.QueryAsync<TModel>("SELECT * FROM TableName", queryData.parameters);
+var adaptedResult = result.Adapt<List<TModel>>();
+```
+
+## DbDataReader
+
+### Querying with QueryReaderAsync
+For more flexibility in data retrieval, you can use the QueryReaderAsync method to get a DbDataReader object and fetch data as needed.
+
+```cshapr
+var reader = await queryManager.QueryReaderAsync("SELECT * FROM TableName", queryData.parameters);
+while (await reader.ReadAsync())
+{
+    // Process each row here
+}
+```
+
+### Streaming Data with StreamReaderAsync
+Similarly, you can use the StreamReaderAsync method to get an IAsyncEnumerable<DbDataReader> for streaming data retrieval.
+
+```csharp
+var dataStream = queryManager.StreamReaderAsync("SELECT * FROM TableName", queryData.parameters);
+await foreach (var dataReader in dataStream)
+{
+    // Process each row here
+}
+```
+
 ## Supported Databases
 AQueryMaker supports the following databases:
 
