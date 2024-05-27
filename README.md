@@ -52,6 +52,26 @@ Use the methods provided by QueryManager to execute queries.
 var result = await queryManager.QueryAsync("SELECT * FROM TableName");
 ```
 
+#### 2. Execute StoredProcedure:
+
+Use the methods provided by QueryManager to execute queries.  (Not supported in Oracle Db)
+
+```csharp
+ // Define the stored procedure name and parameters
+        string storedProcedureName = "YourStoredProcedureName";
+            var parameters = new[]
+      {
+        new KeyValuePair<string, object>("@Parameter1", 1),
+        new KeyValuePair<string, object>("@Parameter2", 2)
+    };
+
+        // Call the stored procedure using QueryAsync method with CommandType.StoredProcedure
+        var result = await Db.Manager().QueryAsync(storedProcedureName,CommandType.StoredProcedure, parameters);
+```
+
+ 
+
+        
 ### Entity Framework Integration
 AQueryMaker seamlessly integrates with Entity Framework Core to simplify database operations.
 
