@@ -138,31 +138,6 @@ public interface IDatabaseManager
     /// <returns>A task representing the asynchronous operation. A list of records as dictionaries.</returns>
     IAsyncEnumerable<List<TModel>> StreamAsync<TModel>(string query, int itemPerPage, params KeyValuePair<string, object>[] whereStatementParameters);
 
-    /// <summary>
-    /// Retrieves the field metadata of a stored procedure asynchronously.
-    /// </summary>
-    /// <param name="procedureName">The name of the stored procedure.</param>
-    /// <returns>A task representing the asynchronous operation. A list of field metadata as dictionaries.</returns>
-    Task<List<Dictionary<string, object>>> GetStoredProcedureFieldsAsync(string procedureName);
-
-    /// <summary>
-    /// Retrieves list of Stored Procedures
-    /// </summary>
-    /// <returns></returns>
-    Task<List<Dictionary<string, object>>> GetStoredProcedures();
-
-    /// <summary>
-    /// Retrieves the method parameters asynchronously.
-    /// </summary>
-    /// <param name="methodName">The name of the method.</param>
-    /// <returns>A task representing the asynchronous operation. A list of method parameters as dictionaries.</returns>
-    Task<List<Dictionary<string, object>>> GetMethodParameters(string methodName);
-
-    Task<List<Dictionary<string, object>>> GetTableFieldsAsync(string tableName);
-
-    Task<List<Dictionary<string, object>>> GetTableListAsync();
-
-    Task<List<Dictionary<string, object>>> GetStoredProcedureParametersAsync(string storedProcedureName);
     
 
 }

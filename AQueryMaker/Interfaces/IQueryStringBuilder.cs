@@ -38,27 +38,4 @@ public interface IQueryStringBuilder
     /// <param name="tableName">The name of the table.</param>
     /// <returns>The generated SQL statement.</returns>
     string IsAutoIncrementStatement(string tableName);
-
-    /// <summary>
-    /// Creates an SQL statement for retrieving the field metadata of the specified stored procedure.
-    /// </summary>
-    /// <param name="storedProcedure">The name of the stored procedure.</param>
-    /// <returns>The generated SQL statement.</returns>
-    string CreateStoredProcedureFieldMetaDataStatement(string storedProcedure);
-
-    /// <summary>
-    /// Creates an SQL statement for retrieving the property metadata of the specified method.
-    /// </summary>
-    /// <param name="methodName">The name of the method.</param>
-    /// <returns>The generated SQL statement.</returns>
-    string CreateMethodPropertyMetaDataStatement(string methodName);
-
-    string CreateGetStoredProceduresStatement();
-
-    string CreateGetTableFieldsStatement();
-    string CreateGetTableListStatement();
-
-    string CreateGetStoredProcedureParametersStatement();
-
-    string CreateGetStoredProcedureParametersStatement(string procedureName);
 }

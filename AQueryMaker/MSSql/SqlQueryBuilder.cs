@@ -45,16 +45,6 @@ public class SqlQueryBuilder : DatabaseManager, IQueryStringBuilder
     }
 
     /// <summary>
-    /// Creates an SQL statement for retrieving the property metadata of the specified method.
-    /// </summary>
-    /// <param name="methodName">The name of the method.</param>
-    /// <returns>The generated SQL statement.</returns>
-    public string CreateMethodPropertyMetaDataStatement(string methodName)
-    {
-        return $"SELECT P.NAME AS PARAMETER_NAME FROM SYS.PARAMETERS P INNER JOIN SYS.OBJECTS O ON O.OBJECT_ID = P.OBJECT_ID WHERE O.TYPE IN ('FN', 'IF', 'TF', 'P') AND O.NAME = @{nameof(methodName)} ";
-    }
-
-    /// <summary>
     /// Creates an SQL statement for retrieving the field metadata of the specified stored procedure.
     /// </summary>
     /// <param name="storedProcedure">The name of the stored procedure.</param>
@@ -62,15 +52,6 @@ public class SqlQueryBuilder : DatabaseManager, IQueryStringBuilder
     public string CreateStoredProcedureFieldMetaDataStatement(string storedProcedure)
     {
         return $"SELECT NAME, SYSTEM_TYPE_NAME FROM SYS.DM_EXEC_DESCRIBE_FIRST_RESULT_SET('EXEC {storedProcedure}', NULL, 0)";
-    }
-
-    /// <summary>
-    /// Creates an SQL statement for retrieving the list of user defined stored procedures.
-    /// </summary>
-    /// <returns>The generated SQL statement.</returns>
-    public string CreateGetStoredProceduresStatement()
-    {
-        return $"SELECT NAME AS SP_NAME FROM SYS.PROCEDURES WHERE TYPE = 'P' AND IS_MS_SHIPPED = 0 ORDER BY NAME;";
     }
 
     /// <summary>
@@ -108,30 +89,5 @@ public class SqlQueryBuilder : DatabaseManager, IQueryStringBuilder
     public string IsAutoIncrementStatement(string tableName)
     {
         return $"SELECT C.NAME PrimaryKeyName, C.IS_IDENTITY  FROM SYS.COLUMNS C JOIN SYS.INDEX_COLUMNS IC ON C.OBJECT_ID = IC.OBJECT_ID AND C.COLUMN_ID = IC.COLUMN_ID JOIN SYS.INDEXES I ON IC.OBJECT_ID = I.OBJECT_ID AND IC.INDEX_ID = I.INDEX_ID WHERE I.IS_PRIMARY_KEY = 1 AND I.OBJECT_ID = OBJECT_ID(@{nameof(tableName)})\n";
-    }
-
-    public string CreateGetTableFieldsStatement()
-    {
-        return "SELECT COLUMN_NAME  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = @TABLE_NAME";
-    }
-
-    public string CreateGetTableListStatement()
-    {
-        return "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' ORDER BY  TABLE_NAME ASC ";
-
-    }
-
-    public string CreateGetStoredProcedureParametersStatement()
-    {
-        return @"SELECT SUBSTRING(PARAMETER_NAME,2,LEN(PARAMETER_NAME)) PARAMETER_NAME FROM INFORMATION_SCHEMA.PARAMETERS
-                      WHERE SPECIFIC_NAME = @SPECIFIC_NAME
-                        ORDER BY ORDINAL_POSITION";
-    }
-
-    public string CreateGetStoredProcedureParametersStatement(string procedureName)
-    {
-        return @$"SELECT SUBSTRING(PARAMETER_NAME,2,LEN(PARAMETER_NAME)) PARAMETER_NAME FROM INFORMATION_SCHEMA.PARAMETERS
-                      WHERE SPECIFIC_NAME = '{procedureName}'
-                        ORDER BY ORDINAL_POSITION";
     }
 }

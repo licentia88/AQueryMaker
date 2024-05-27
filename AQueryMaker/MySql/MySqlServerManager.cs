@@ -162,149 +162,7 @@ public class MySqlServerManager : MySqlQueryBuilder, IDatabaseManager
         }
         while (hasMoreRows);
     }
-
-    /// <inheritdoc/>
-    public async Task<List<Dictionary<string, object>>> GetStoredProcedureFieldsAsync(string procedureName)
-    {
-        var command = Connection.CreateCommand();
-        command.CommandTimeout = TimeOut;
-
-        await command.OpenAsync();
-
-        var metadataQuery = CreateStoredProcedureFieldMetaDataStatement(procedureName);
-
-        command.CommandText = metadataQuery;
-
-        command.CommandType = CommandType.Text;
  
-        DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
-
-        var result = await ExecuteCommandAsync(reader);
-
-        if (command.Connection != null)
-            await command.Connection.CloseAsync();
-
-        return result;
-    }
-
-    /// <inheritdoc/>
-    public async Task<List<Dictionary<string, object>>> GetMethodParameters(string methodName)
-    {
-        var command = Connection.CreateCommand();
-        command.CommandTimeout = TimeOut;
-
-        await command.OpenAsync();
-
-        var metadataQuery = CreateMethodPropertyMetaDataStatement(methodName);
-
-        command.CommandText = metadataQuery;
-
-        command.CommandType = CommandType.Text;
-
-        AddWhereStatementParameters(command, (nameof(methodName), methodName));
-
-        DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
-
-        var result = await ExecuteCommandAsync(reader);
-
-        if (command.Connection != null) await command.Connection.CloseAsync();
-
-        return result;
-    }
-
-    public async Task<List<Dictionary<string, object>>> GetStoredProcedures()
-    {
-        var command = Connection.CreateCommand();
-        command.CommandTimeout = TimeOut;
-
-        await command.OpenAsync();
-
-        var metadataQuery = CreateGetStoredProceduresStatement();
-
-        command.CommandText = metadataQuery;
-
-        command.CommandType = CommandType.Text;
-
-        DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
-
-        var result = await ExecuteCommandAsync(reader);
-
-        if (command.Connection != null) await command.Connection.CloseAsync();
-
-        return result;
-    }
-
-    public async Task<List<Dictionary<string, object>>> GetTableFieldsAsync(string tableName)
-    {
-        var command = Connection.CreateCommand();
-        command.CommandTimeout = TimeOut;
-
-        await command.OpenAsync();
-
-        var metadataQuery = CreateGetTableFieldsStatement();
-
-        command.CommandText = metadataQuery;
-
-        command.CommandType = CommandType.Text;
-
-        AddWhereStatementParameters(command, ("TABLE_NAME", tableName));
-
-        DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
-
-        var result = await ExecuteCommandAsync(reader);
-
-        if (command.Connection != null) await command.Connection.CloseAsync();
-
-        return result;
-    }
-
-    public async Task<List<Dictionary<string, object>>> GetTableListAsync()
-    {
-        var command = Connection.CreateCommand();
-        command.CommandTimeout = TimeOut;
-
-        await command.OpenAsync();
-
-        var metadataQuery = CreateGetTableListStatement();
-
-        command.CommandText = metadataQuery;
-
-        command.CommandType = CommandType.Text;
-
-        DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
-
-        var result = await ExecuteCommandAsync(reader);
-
-        if (command.Connection != null) await command.Connection.CloseAsync();
-
-        return result;
-    }
-
-    public async Task<List<Dictionary<string, object>>> GetStoredProcedureParametersAsync(string storedProcedureName)
-    {
-        var command = Connection.CreateCommand();
-        command.CommandTimeout = TimeOut;
-
-        await command.OpenAsync();
-
-        var metadataQuery = CreateGetStoredProcedureParametersStatement();
-
-        command.CommandText = metadataQuery;
-
-        command.CommandType = CommandType.Text;
-
-        AddWhereStatementParameters(command, ("SPECIFIC_NAME", storedProcedureName));
-
-        DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
-
-        var result = await ExecuteCommandAsync(reader);
-
-        if (command.Connection != null) await command.Connection.CloseAsync();
-
-        return result;
-        
-    }
-
     public Task<DbDataReader> QueryReaderAsync(string query, params KeyValuePair<string, object>[] whereStatementParameters)
     {
         return QueryReaderAsync(query, CommandType.Text, whereStatementParameters);
@@ -402,8 +260,8 @@ public class MySqlServerManager : MySqlQueryBuilder, IDatabaseManager
 
         var result = await ExecuteCommandAsync(reader);
 
-
-        await command.Connection.CloseAsync();
+        if (command.Connection != null) 
+            await command.Connection.CloseAsync();
 
         return result.Adapt<List<TModel>>();
     }

@@ -38,77 +38,7 @@ public class OracleServerManager : OracleQueryBuilder, IDatabaseManager
         throw new NotImplementedException();
     }
 
-    public async Task<List<Dictionary<string, object>>> GetStoredProcedureParametersAsync(string storedProcedureName)
-    {
-        var command = Connection.CreateCommand();
-        command.CommandTimeout = TimeOut;
-
-        await command.OpenAsync();
-
-        var metadataQuery = CreateGetStoredProcedureParametersStatement(storedProcedureName);
-
-        command.CommandText = metadataQuery;
-
-        command.CommandType = CommandType.Text;
-
-        DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
-
-        var result = await ExecuteCommandAsync(reader);
-
-        if (command.Connection != null) await command.Connection.CloseAsync();
-
-        return result;
-    }
-
-    public async Task<List<Dictionary<string, object>>> GetStoredProcedures()
-    {
-        var command = Connection.CreateCommand();
-        command.CommandTimeout = TimeOut;
-
-        await command.OpenAsync();
-
-        var metadataQuery = CreateGetStoredProceduresStatement();
-
-        command.CommandText = metadataQuery;
-
-        command.CommandType = CommandType.Text;
-
-        DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
-
-        var result = await ExecuteCommandAsync(reader);
-
-        if (command.Connection != null) await command.Connection.CloseAsync();
-
-        return result;
-    }
-
-    public Task<List<Dictionary<string, object>>> GetTableFieldsAsync(string tableName)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<List<Dictionary<string, object>>> GetTableListAsync()
-    {
-        var command = Connection.CreateCommand();
-        command.CommandTimeout = TimeOut;
-
-        await command.OpenAsync();
-
-        var metadataQuery = CreateGetTableListStatement();
-
-        command.CommandText = metadataQuery;
-
-        command.CommandType = CommandType.Text;
-
-        DbDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.Default);
-
-        var result = await ExecuteCommandAsync(reader);
-
-        if (command.Connection != null) await command.Connection.CloseAsync();
-
-        return result;
-    }
-
+    
     [EditorBrowsable(EditorBrowsableState.Never)]
     public Task<Dictionary<string, object>> InsertAsync(string tableName, Dictionary<string, object> model, CommandBehavior commandBehavior = CommandBehavior.Default)
     {

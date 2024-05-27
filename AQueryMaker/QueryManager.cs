@@ -80,25 +80,7 @@ public class QueryManager : IDatabaseManager
     {
         return _manager.QueryReaderAsync(query, commandType, whereStatementParameters);
     }
-
-    /// <summary>
-    /// Asynchronously retrieves metadata for a stored procedure's fields.
-    /// Dictionary Keys
-    /// NAME, SYSTEM_TYPE_NAME
-    /// </summary>
-    public Task<List<Dictionary<string, object>>> GetStoredProcedureFieldsAsync(string procedureName)
-    {
-        return _manager.GetStoredProcedureFieldsAsync(procedureName);
-    }
-
-    /// <summary>
-    /// Asynchronously retrieves metadata for a method's parameters.
-    /// </summary>
-    public Task<List<Dictionary<string, object>>> GetMethodParameters(string methodName)
-    {
-        return _manager.GetMethodParameters(methodName);
-    }
-
+ 
     public IAsyncEnumerable<List<Dictionary<string, object>>> StreamAsync(string query,
         params KeyValuePair<string, object>[] whereStatementParameters)
     {
@@ -110,32 +92,7 @@ public class QueryManager : IDatabaseManager
     {
         return _manager.StreamAsync(query, itemPerPage, whereStatementParameters);
     }
-
-    /// <summary>
-    /// Retrieves list of Stored Procedures
-    /// Dictionary Keys : SP_NAME
-    /// </summary>
-    /// <returns></returns>
-    public Task<List<Dictionary<string, object>>> GetStoredProcedures()
-    {
-        return _manager.GetStoredProcedures();
-    }
-
-    public Task<List<Dictionary<string, object>>> GetTableFieldsAsync(string tableName)
-    {
-        return _manager.GetTableFieldsAsync(tableName);
-    }
-
-    public Task<List<Dictionary<string, object>>> GetTableListAsync()
-    {
-        return _manager.GetTableListAsync();
-    }
-
-    public Task<List<Dictionary<string, object>>> GetStoredProcedureParametersAsync(string storedProcedureName)
-    {
-        return _manager.GetStoredProcedureParametersAsync(storedProcedureName);
-    }
-
+ 
     public Task<List<TModel>> QueryAsync<TModel>(string query, params KeyValuePair<string, object>[] whereStatementParameters)
     {
         return _manager.QueryAsync<TModel>(query,whereStatementParameters);
