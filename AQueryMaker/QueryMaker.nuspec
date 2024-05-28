@@ -3,18 +3,18 @@
 
 	<metadata>
 		<id>AQueryMaker</id>
-	    <version>1.2.4</version>
+	    <version>1.2.5</version>
 		<title>Query Maker</title>
 		<authors>ASIM GUNDUZ</authors>
 		<owners>ASIM GUNDUZ</owners>
 		<license type="expression">MIT</license>
-		<projectUrl>https://github.com/licentia88/Generator/tree/MyBranch/QueryMaker</projectUrl>
+		<projectUrl>https://github.com/licentia88/AQueryMaker</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>MSSql/Oracle Query CRUD Query Generator and Executor</description>
 		 
 		<copyright>Copyright 2023</copyright>
 		<tags>Query</tags>
-		<repository type="git" url="https://github.com/licentia88/Generator" />
+		<repository type="git" url="https://github.com/licentia88/AQueryMaker" />
 		<!--<dependencies>
 			<dependency id="System.Data.SqlClient" version="4.8.*" />
 		 	<dependency id="Oracle.ManagedDataAccess.Core" version="3.21.100" />
