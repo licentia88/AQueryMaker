@@ -261,7 +261,7 @@ public class SqlServerManager : SqlQueryBuilder, IDatabaseManager
     public async Task<List<TModel>> QueryAsync<TModel>(string query, CommandType commandType,
         params KeyValuePair<string, object>[] whereStatementParameters)
     {
-        if (Connection is not OracleConnection sqlConnection) throw new InvalidCastException();
+        if (Connection is not SqlConnection sqlConnection) throw new InvalidCastException();
 
         var command = sqlConnection.CreateCommand();
         command.CommandTimeout = TimeOut;
