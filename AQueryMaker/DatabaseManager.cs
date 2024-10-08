@@ -27,9 +27,7 @@ public abstract class DatabaseManager
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = $"@{statement.Key}";
                 parameter.Value = statement.Value ?? DBNull.Value;
-
-
-               
+ 
                 parameters[parameterIndex] = parameter;
 
                 parameterIndex++;
