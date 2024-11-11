@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <ReleaseVersion>1.0.5</ReleaseVersion>
@@ -19,19 +19,19 @@
       <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <ItemGroup>
-      <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.100" />
+      <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.6.1" />
       <PackageReference Include="Mapster" Version="7.4.0" />
-      <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
+      <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
        <PackageReference Include="Costura.Fody" Version="5.7.0">
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         <PrivateAssets>all</PrivateAssets>
       </PackageReference>
-      <PackageReference Include="Fody" Version="6.8.0">
+      <PackageReference Include="Fody" Version="6.8.2">
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         <PrivateAssets>all</PrivateAssets>
       </PackageReference>
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.4" />
-      <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.10" />
+      <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
     </ItemGroup>
 
     <ItemGroup>
